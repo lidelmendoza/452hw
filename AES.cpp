@@ -1,17 +1,17 @@
 #include "AES.h"
 
 /**
- * Sets the key to use 
+ * Sets the key to use
  * @param key - the first byte of this represents whether
- * to encrypt or decrypt. 00 means encrypt and any other 
+ * to encrypt or decrypt. 00 means encrypt and any other
  * value to decrypt. Then come the bytes of the 128-bit key
  * (should be 16 of them).
  *  @return - True if the key is valid and False otherwise
  */
 bool AES::setKey(const unsigned char* keyArray) {
-	
-	
-	//TODO: AES implementation of openssl cares about whether 
+
+
+	//TODO: AES implementation of openssl cares about whether
 	//you are encrypting or decryting when setting the key.
 	//That is, when encrypting you use function AES_set_encrypt_key(...)
 	//and when decrypting AES_set_decrypt_key(...).
@@ -25,7 +25,22 @@ bool AES::setKey(const unsigned char* keyArray) {
 	//Both functions return 0 on success and other values of faliure.
 	//For documentation, please see https://boringssl.googlesource.com/boringssl/+/2623/include/openssl/aes.h
 	//and aes.cpp example provided witht the assignment.
-	
+	unsigned char* keyAfterByte[16];
+	for(int i = 1; i < 17; i++){
+		keyAfterByte[i - 1] = keyArray[i];
+		std::cout << keyAfterByte[i - 1] << std::endl;
+	}
+
+	if (keyArray[0] == 0){
+		if (!AES_set_encrypt_key((const unsigned char*)keyAfterByte, 128, &enc_key)){
+			aes_key = keyAfterByte;
+		}
+	}else{
+		if (!AES_set_decrypt_key((const unsigned char*)keyAfterByte, 128, &dec_key)){
+			aes_key = keyAfterByte;
+		}
+	}
+
 
 	return false;
 
@@ -42,20 +57,34 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
 	// and the aes.cpp example provided
 	// 3. return the pointer to the ciphertext
 	//
-	return NULL;
+	unsigned char* enc_in, enc_out;
+	enc_in = new unsigned char*[sizeof(plainText)];
+	for(int i = 0; i < sizeof(plainText) - 1; i++){
+		enc_in[i] = plainText[i];
+	}
+
+	AES_ecb_encrypt(enc_in, enc_out, &aes_key, AES_ENCRYPT);
+
+	return enc_out;
 }
 
-/** 
+/**
  * Decrypts a string of ciphertext
  * @param cipherText - the ciphertext
  * @return - the plaintext
  */
-unsigned cThar* AES::decrypt(const unsigned char* cipherText) {
+unsigned char* AES::decrypt(const unsigned char* cipherText) {
 
 	//TODO: 1. Dynamically allocate a block to store the plaintext.
 	// 2. Use AES_ecb_encrypt(...) to decrypt the text (please see the URL in setKey(...)
 	//  and the aes.cpp example provided.
 	//  3. Return the pointer tot he plaintext
-	
-	return NULL;
+	unsigned char* dec_in, dec_out;
+	dec_in = new unsigned char*[sizeof(cipherText)];
+	for(int i = 0l i < sizeof(cipherText) - 1; i++){
+		dec_in[i] = cipherText[i];
+	}
+	AES_ecb_encrypt(dec_in, enc_out, &aes_key, AES_DECRYPT);
+
+	return dec_out;
 }

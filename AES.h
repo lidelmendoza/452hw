@@ -25,7 +25,7 @@ class AES: public CipherInterface
 	AES() {}
 
 	/**
- 	* Sets the key to use 
+ 	* Sets the key to use
  	* @param key - the key to use
  	* @return - True if the key is valid and False otherwise
  	*/
@@ -40,9 +40,9 @@ class AES: public CipherInterface
 
 	/* The protected members */
 	protected:
-	
+
 	//TODO: declare the AES key
-	
+		AES_KEY aes_key;
 };
 
 #endif
