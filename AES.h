@@ -1,4 +1,4 @@
-fndef AES_H
+#ifndef AES_H
 #define AES_H
 
 #include <stdio.h>
@@ -36,6 +36,7 @@ class AES: public CipherInterface
  	* @param plainText - the plaintext string
  	* @return - the encrypted ciphertext string
  	*/
+	virtual unsigned char* encrypt(const unsigned char* plainText);
 	virtual unsigned char* decrypt(const unsigned char* cipherText);
 
 	/* The protected members */

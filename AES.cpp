@@ -25,18 +25,18 @@ bool AES::setKey(const unsigned char* keyArray) {
 	//Both functions return 0 on success and other values of faliure.
 	//For documentation, please see https://boringssl.googlesource.com/boringssl/+/2623/include/openssl/aes.h
 	//and aes.cpp example provided witht the assignment.
-	unsigned char* keyAfterByte[16];
+	unsigned char keyAfterByte[16];
 	for(int i = 1; i < 17; i++){
 		keyAfterByte[i - 1] = keyArray[i];
-		std::cout << keyAfterByte[i - 1] << std::endl;
+		fprintf(stderr, "%c\n", keyAfterByte[i - 1]);
 	}
 
 	if (keyArray[0] == 0){
-		if (!AES_set_encrypt_key((const unsigned char*)keyAfterByte, 128, &enc_key)){
-			aes_key = keyAfterByte;
+		if (!AES_set_encrypt_key((const unsigned char*)keyAfterByte, 128, &aes_key)){
+			aes_key = (AES_KEY)keyAfterByte;
 		}
 	}else{
-		if (!AES_set_decrypt_key((const unsigned char*)keyAfterByte, 128, &dec_key)){
+		if (!AES_set_decrypt_key((const unsigned char*)keyAfterByte, 128, &aes_key)){
 			aes_key = keyAfterByte;
 		}
 	}
@@ -57,8 +57,8 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
 	// and the aes.cpp example provided
 	// 3. return the pointer to the ciphertext
 	//
-	unsigned char* enc_in, enc_out;
-	enc_in = new unsigned char*[sizeof(plainText)];
+	unsigned char* enc_in = new unsigned char*[], enc_out;
+	enc_in = new unsigned char[sizeof(plainText)];
 	for(int i = 0; i < sizeof(plainText) - 1; i++){
 		enc_in[i] = plainText[i];
 	}
@@ -80,11 +80,11 @@ unsigned char* AES::decrypt(const unsigned char* cipherText) {
 	//  and the aes.cpp example provided.
 	//  3. Return the pointer tot he plaintext
 	unsigned char* dec_in, dec_out;
-	dec_in = new unsigned char*[sizeof(cipherText)];
-	for(int i = 0l i < sizeof(cipherText) - 1; i++){
+	dec_in = new unsigned char[sizeof(cipherText)];
+	for(int i = 0; i < sizeof(cipherText) - 1; i++){
 		dec_in[i] = cipherText[i];
 	}
-	AES_ecb_encrypt(dec_in, enc_out, &aes_key, AES_DECRYPT);
+	AES_ecb_encrypt(dec_in, dec_out, &aes_key, AES_DECRYPT);
 
 	return dec_out;
 }
