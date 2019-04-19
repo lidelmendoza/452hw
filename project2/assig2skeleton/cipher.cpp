@@ -16,18 +16,22 @@ int main(int argc, char** argv)
 	 * misbehave.
 	 */
 	
-	
 	/* Create an instance of the DES cipher */	
 	CipherInterface* cipher = NULL;
-//	cipher = argv[1];
-	
-	if(argv[1] == 'DES') {
-		printf("Hello");
-		DES des;
-		cipher = des; }
-	else if( argv[1] == "AES") {
-		 AES aes; } 
-	//printf("Hello\n");		
+	if(argc ==  6) {
+		fprintf(stderr, "ERROR [%s %s %d]: could not allocate memory\n",
+                __FILE__, __FUNCTION__, __LINE__);
+		exit(-1);
+	}
+	/* Compare if argv[1] is equal to DES if yes create a DES instance */
+	if(strcmp((const char)argv[1],(const char*)"AES") == 0) {
+                cipher = new AES; }
+	else if(strcmp((const char*)argv[1], (const char*)"DES") == 0) {
+		cipher = new DES; }
+	//else if(strcmp((const char)argv[1],(const char*)"AES") != NULL) {
+		cipher = new AES; } 
+
+	cipher->setKey((const unsigned char*)"0123456789abcdef");		
 	/* Error checks */
 	if(!cipher)
 	{
@@ -42,7 +46,7 @@ int main(int argc, char** argv)
 	 * Your program should take input from
 	 * command line.
 	 */
-	cipher->setKey((const unsigned char*)"0123456789abcdef");
+//	cipher->setKey((const unsigned char*)"0123456789abcdef");
 	
 	/* Perform encryption */
 	cipher->encrypt((const unsigned char*)"hello world");

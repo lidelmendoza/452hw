@@ -5,6 +5,11 @@
  * @param key - the key to use
  * @return - True if the key is valid and False otherwise
  */
+DES::DES(): key(nullptr) {
+	for(int i =  0; i < 8; ++i) {
+		des_key[i] = "";
+	}
+}
 bool DES::setKey(const unsigned char* keyArray)
 {
 	/**
