@@ -20,41 +20,49 @@ int main(int argc, char** argv)
 
 	/* Create an instance of the Cipher Interface */
 	CipherInterface* cipher = NULL;
+	if(argc != 6){
+		fprintf(stderr, "ERROR [%s %s %d]: Input did not provide enough arguments\n",
+	 		__FILE__, __FUNCTION__, __LINE__);
+			exit(-1);
+	}
 
 	// if-else to choose between AES and DES
 	if(std::string(argv[1]) == "AES"){
 		printf("AES");
 		cipher = new AES();
+		if(std::string(argv[2]).length() < 32){
+			std::cout << "Error: Need a 16-byte key (32 characters)\n";
+			exit(-1);
+		}
+		unsigned char key[33];
+
+		// Temp variable to hold the key argument
+		std::string temp = std::string(argv[2]);
+
+		// Read key argument into indices 1-16
+		for(int i = 1; i < 32; i++){
+			key[i] = temp[i - 1];
+		}
+
+		// if-else to determine whether to encrypt or decrypt
+		if(std::string(argv[3]) == "ENC"){
+			printf("%s\n", "ENC\n");
+			key[0] = 0;
+
+		}else if (std::string(argv[3]) == "DEC"){
+			printf("DEC");
+			key[0] = 1;
+		}else{
+			printf("Error");
+			exit(-1);
+		}
+		cipher->setKey((const unsigned char*)key);
 	}else if(std::string(argv[1]) == "DES"){
 		printf("DES");
-		//DES des;
-		//cipher = &des;
+		cipher = new DES();
+		cipher->setKey((const unsigned char*)argv[2]);
 	}else{
 		fprintf(stderr, "NO SUCH ENCRYPTION METHOD\n");
-		exit(-1);
-	}
-
-	// Temp variable to hold the key argument
-	std::string temp = std::string(argv[2]);
-
-	// Create key variable
-	unsigned char* key = new unsigned char;
-
-	// Read key argument into indices 1-16
-	for(int i = 1; i < 17; i++){
-		key[i] = temp[i - 1];
-	}
-
-	// if-else to determine whether to encrypt or decrypt
-	if(std::string(argv[3]) == "ENC"){
-		printf("%s\n", "ENC\n");
-		key[0] = 0;
-
-	}else if (std::string(argv[3]) == "DEC"){
-		printf("DEC");
-		key[0] = 1;
-	}else{
-		printf("Error");
 		exit(-1);
 	}
 
@@ -67,75 +75,78 @@ int main(int argc, char** argv)
 
 	// string to hold original message
 	string plainText = characterBuffer.str();
+	std::cout << "This is the length of the character buffer: " << plainText.length();
 
-	// unsigned char to hold cipherText
-	// cipher text isnt an unsgined char * and the encrypt method requires that as an assigned
-	string cipherText = "";
-
-	unsigned char* cipherBlock = new unsigned char[16];
-	memset(cipherBlock, 0, 16);
-
-	std::cout << "This is the key: ";
-	for(int i = 1; i < 17; i++){
-		std::cout << key[i];
-	}
-
-
-	std::cout << "\nThis is the size of the key: " << sizeof(key) << "\n";
-
-	if (!cipher->setKey((unsigned char*)key)){
-		/* The plaintext */
-		int posInPlainText = 0;
-		string block = plainText.substr(posInPlainText, posInPlainText +  16);
-
-		}
-char hex[16];
-		for(int i = 0; i < 16; i++){
-			if(block[i] >= '0' && block[i] <= '9'){
-				hex[i] = (char)block[i] - '0';
-			}else if(block[i] >= 'a' && block[i] <= 'f'){
-				hex[i] = (char)(block[i] - 97) + 10;
-			}else{
-				hex[i] = 'z';
+	// Padding for AES block
+	if(std::string(argv[1]) == "AES"){
+		if((plainText.length() - 1) % 16 != 0){
+			int pad = 16 - ((plainText.length() - 1) % 16);
+			int count = 0;
+			while(count < pad){
+				plainText += "0";
+				count++;
 			}
-		/*
-		unsigned char* currentBlock = new unsigned char[16];
-		memset(currentBlock, 0, 16);
-
-		// Change characters into hex bytes
-		std::cout << "These are the hex values: ";
-		for(int i = 0; i < 16; i++){
-			if(block[i] >= '0' && block[i] <= '9'){
-				currentBlock[i] = (unsigned char*)(block[i] - '0');
-			}else if(block[i] >= 'a' && block[i] <= 'f'){
-				currentBlock[i] = (unsigned char*)((block[i] - 97) + 10);
-			}else{
-				currentBlock[i] = (unsigned char*)'z';
+		}
+	// Padding for DES block
+	}else{
+		if((plainText.length() - 1) % 8 != 0){
+			int pad = 8 - ((plainText.length() - 1) % 8);
+			int count = 0;
+			while(count < pad){
+				plainText += "0";
+				count++;
 			}
-			std::cout << currentBlock[i] << " ";
-		}
-		*/
-		/* Perform encryption */
-		if (key[0] == 0){
-			std::cout << "size of cipher text before encrypt: " << sizeof(cipherText) << "\n";
-			//cipherBlock = cipher->encrypt((const unsigned char*)currentBlock);
-		}else{
-			// cipherBlock = cipher->decrypt((const unsigned char*)currentBlock);
 		}
 	}
-	std::cout << "Made it out" << "\n";
 
-	std::cout << "Key before: " << key[0] << "\n";
-	key[0] = 1;
-	std::cout << "this is the key: " << key[0] << "\n";
-	/*
-	if (cipher->setKey((unsigned char*)key)){
-		unsigned char* decryptedText;
+	// Read blocks from the file and encrypt or decrypt for AES
+	if(std::string(argv[1]) == "AES"){
+		for(int bufferIndex = 0; bufferIndex < plainText.length() - 1; bufferIndex += 16){
+			unsigned char PlainTextBlock[16];
+			unsigned char* cipherBlock = new unsigned char[16];
+			for(int i = 0; i < 16; i++){
+				PlainTextBlock[i] = plainText[i + bufferIndex];
+			}
+			// Encrypt or decrypt
+			if(std::string(argv[3]) == "ENC"){
+				cipherBlock = cipher->encrypt((const unsigned char*) PlainTextBlock);
+			}else{
+				cipherBlock = cipher->decrypt((const unsigned char*) PlainTextBlock);
+			}
 
-		decryptedText = cipher->decrypt((const unsigned char*)cipherText);
+			// Read either cipher text or plain text to designated file
+			std::ofstream outFile;
+			outFile.open(std::string(argv[5]), ios::app);
+			for(int blockIndex = 0; blockIndex < 16; blockIndex++){
+				outFile << cipherBlock[blockIndex];
+			}
+			outFile.close();
+		}
+		// Read blocks from the file and encrypt or decrypt for DES
+	}else{
+		for(int bufferIndex = 0; bufferIndex < plainText.length() - 1; bufferIndex += 8){
+			unsigned char PlainTextBlock[8];
+			unsigned char* cipherBlock = new unsigned char[8];
+			for(int i = 0; i < 8; i++){
+				PlainTextBlock[i] = plainText[i + bufferIndex];
+			}
+			// Encrypt or decrypt
+			if(std::string(argv[3]) == "ENC"){
+				cipherBlock = cipher->encrypt((const unsigned char*) PlainTextBlock);
+			}else{
+				cipherBlock = cipher->decrypt((const unsigned char*) PlainTextBlock);
+			}
+
+			// Read either cipher text or plain text to designated text
+			std::ofstream outFile;
+			outFile.open(std::string(argv[5]), ios::app);
+			for(int blockIndex = 0; blockIndex < 8; blockIndex++){
+				outFile << cipherBlock[blockIndex];
+			}
+			outFile.close();
+		}
 	}
-	//std::cout << decryptedText;
-*/
+
 	/* Error checks
 	if(!cipher) {
 		fprintf(stderr, "ERROR [%s %s %d]: could not allocate memory\n",
@@ -150,13 +161,5 @@ char hex[16];
  	 * command line.
  	 */
 
-
-	//fprintf("cipher text: %s\n",cipherText);
-	/* Perform encryption */
-	//string cipherText = cipher->encrypt("hello world");
-
-	/* Perform decryption */
-	//cipher->decrypt(cipherText);
-	//
 	return 0;
 }
