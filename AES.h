@@ -43,7 +43,7 @@ class AES: public CipherInterface
 	protected:
 
 	//TODO: declare the AES key
-		AES_KEY aes_key;
+		AES_KEY aes_enc_key, aes_dec_key;
 };
 
 #endif

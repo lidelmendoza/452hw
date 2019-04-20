@@ -1,5 +1,5 @@
 #include "AES.h"
-
+#include <iostream>
 /**
  * Sets the key to use
  * @param key - the first byte of this represents whether
@@ -25,19 +25,23 @@ bool AES::setKey(const unsigned char* keyArray) {
 	//Both functions return 0 on success and other values of faliure.
 	//For documentation, please see https://boringssl.googlesource.com/boringssl/+/2623/include/openssl/aes.h
 	//and aes.cpp example provided witht the assignment.
-	unsigned char keyAfterByte[16];
+	printf("Made it to setkey\n");
+	unsigned char keyAfterByte = new unsigned char[16];
+
 	for(int i = 1; i < 17; i++){
 		keyAfterByte[i - 1] = keyArray[i];
-		fprintf(stderr, "%c\n", keyAfterByte[i - 1]);
 	}
 
+	std::cout << "size of key without byte: " << sizeof(keyAfterByte) << "\n";
+
 	if (keyArray[0] == 0){
-		if (!AES_set_encrypt_key((const unsigned char*)keyAfterByte, 128, &aes_key)){
-			aes_key = (AES_KEY)keyAfterByte;
+		if (AES_set_encrypt_key(keyAfterByte, 128, &aes_enc_key) != 0){
+			printf("Key set to enc\n");
+			std::cout << "size of key after encrypt: " << sizeof(&aes_enc_key) << "\n";
 		}
 	}else{
-		if (!AES_set_decrypt_key((const unsigned char*)keyAfterByte, 128, &aes_key)){
-			aes_key = keyAfterByte;
+		if (AES_set_decrypt_key(keyAfterByte, 128, &aes_dec_key) != 0){
+			printf("Key set to dec");
 		}
 	}
 
@@ -56,15 +60,29 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
 	// 2. Use AES_ecb_encrypt(...) to encrypt the text (please see the URL in setKey(...)
 	// and the aes.cpp example provided
 	// 3. return the pointer to the ciphertext
-	//
-	unsigned char* enc_in = new unsigned char*[], enc_out;
-	enc_in = new unsigned char[sizeof(plainText)];
-	for(int i = 0; i < sizeof(plainText) - 1; i++){
+
+	printf("Made it to encrypt\n");
+	std::cout << "size of plain text before encrypt: " << sizeof(plainText) << "\n";
+	unsigned char enc_in[16];
+	unsigned char* enc_out = new unsigned char[16];
+
+	memset(enc_in, 0, 16);
+	memset(enc_out, 0, 16);
+
+	/*
+	std::cout << "size of ENC_IN: " << sizeof(enc_in) << "\n";
+	for(int i = 0; i < 16; i++){
 		enc_in[i] = plainText[i];
 	}
+*/
+	AES_ecb_encrypt(plainText, enc_in, &aes_enc_key, AES_ENCRYPT);
+	std::cout << "size of ENC_OUT after encrypt: " << sizeof(enc_out) << "\n";
+	for(int i = 0; i < 16; i++){
+		enc_out[i] = enc_in[i];
+		std::cout << enc_out[i] << "\n";
+	}
 
-	AES_ecb_encrypt(enc_in, enc_out, &aes_key, AES_ENCRYPT);
-
+	printf("Exiting encrypt\n");
 	return enc_out;
 }
 
@@ -79,12 +97,18 @@ unsigned char* AES::decrypt(const unsigned char* cipherText) {
 	// 2. Use AES_ecb_encrypt(...) to decrypt the text (please see the URL in setKey(...)
 	//  and the aes.cpp example provided.
 	//  3. Return the pointer tot he plaintext
-	unsigned char* dec_in, dec_out;
-	dec_in = new unsigned char[sizeof(cipherText)];
-	for(int i = 0; i < sizeof(cipherText) - 1; i++){
-		dec_in[i] = cipherText[i];
-	}
-	AES_ecb_encrypt(dec_in, dec_out, &aes_key, AES_DECRYPT);
+	unsigned char dec_in[16];
+	unsigned char* dec_out = new unsigned char[16];
 
+	memset(dec_in, 0, 16);
+	memset(dec_out, 0, 16);
+
+	// std::cout << &aes_key;
+	AES_ecb_encrypt(cipherText, dec_in, &aes_dec_key, AES_DECRYPT);
+
+	for(int i = 0; 16; i++){
+		dec_out[i] = cipherText[i];
+		// std::cout << dec_in[i];
+	}
 	return dec_out;
 }
