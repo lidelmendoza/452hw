@@ -28,8 +28,8 @@ class DES: public CipherInterface
  		*/
 		DES() {}
 
-		/** 
- 		* Sets the key to use 
+		/**
+ 		* Sets the key to use
  		* @param key - the key to use
  		* @return - True if the key is valid and False otherwise
  		*/
@@ -43,7 +43,7 @@ class DES: public CipherInterface
 		virtual unsigned char* encrypt(const unsigned char* plaintext);
 
 		/**
- 		* Decrypts a string of ciphertext 
+ 		* Decrypts a string of ciphertext
  		* @param ciphertext - the ciphertext
  		* @return - the plaintext
  		*/
@@ -91,4 +91,3 @@ class DES: public CipherInterface
 };
 
 #endif
-
