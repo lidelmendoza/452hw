@@ -26,29 +26,43 @@ bool AES::setKey(const unsigned char* keyArray) {
 	//For documentation, please see https://boringssl.googlesource.com/boringssl/+/2623/include/openssl/aes.h
 	//and aes.cpp example provided witht the assignment.
 	printf("Made it to setkey\n");
-	unsigned char keyAfterByte = new unsigned char[16];
-
-	for(int i = 1; i < 17; i++){
+	unsigned char keyAfterByte[32];
+	unsigned char aes_key[16];
+	int AESKeyIndex = 0;
+	int keyIndex = 0;
+	// Read actual key
+	for(int i = 1; i < 33; i++){
 		keyAfterByte[i - 1] = keyArray[i];
 	}
 
-	std::cout << "size of key without byte: " << sizeof(keyAfterByte) << "\n";
+	// Convert AES key into hexidecimal
+	while(AESKeyIndex != 16){
+		if(aes_key[AESKeyIndex] = twoCharToHexByte(keyAfterByte + keyIndex) == 'z'){
+			return false;
+		}
+		keyIndex += 2;
+		++AESKeyIndex;
+	}
 
+	std::cout << "\nThis is in the set key:\n";
+	for(int i = 0; i < 16; i++){
+		std::cout << aes_key[i];
+	}
+	std::cout << "\n\n";
+	// Sets key to either encrypt or decrypt mode
 	if (keyArray[0] == 0){
-		if (AES_set_encrypt_key(keyAfterByte, 128, &aes_enc_key) != 0){
+		if (AES_set_encrypt_key(aes_key, 128, &AESKey) != 0){
 			printf("Key set to enc\n");
-			std::cout << "size of key after encrypt: " << sizeof(&aes_enc_key) << "\n";
 		}
 	}else{
-		if (AES_set_decrypt_key(keyAfterByte, 128, &aes_dec_key) != 0){
+		if (AES_set_decrypt_key(aes_key, 128, &AESKey) != 0){
 			printf("Key set to dec");
 		}
 	}
 
-
 	return false;
-
 }
+
 /**
  * Encrypts a plaintext string
  * @param plaintext - the plaintext string
@@ -62,11 +76,8 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
 	// 3. return the pointer to the ciphertext
 
 	printf("Made it to encrypt\n");
-	std::cout << "size of plain text before encrypt: " << sizeof(plainText) << "\n";
-	unsigned char enc_in[16];
 	unsigned char* enc_out = new unsigned char[16];
 
-	memset(enc_in, 0, 16);
 	memset(enc_out, 0, 16);
 
 	/*
@@ -75,12 +86,7 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
 		enc_in[i] = plainText[i];
 	}
 */
-	AES_ecb_encrypt(plainText, enc_in, &aes_enc_key, AES_ENCRYPT);
-	std::cout << "size of ENC_OUT after encrypt: " << sizeof(enc_out) << "\n";
-	for(int i = 0; i < 16; i++){
-		enc_out[i] = enc_in[i];
-		std::cout << enc_out[i] << "\n";
-	}
+	AES_ecb_encrypt(plainText, enc_out, &AESKey, AES_ENCRYPT);
 
 	printf("Exiting encrypt\n");
 	return enc_out;
@@ -97,18 +103,73 @@ unsigned char* AES::decrypt(const unsigned char* cipherText) {
 	// 2. Use AES_ecb_encrypt(...) to decrypt the text (please see the URL in setKey(...)
 	//  and the aes.cpp example provided.
 	//  3. Return the pointer tot he plaintext
-	unsigned char dec_in[16];
 	unsigned char* dec_out = new unsigned char[16];
 
-	memset(dec_in, 0, 16);
 	memset(dec_out, 0, 16);
 
 	// std::cout << &aes_key;
-	AES_ecb_encrypt(cipherText, dec_in, &aes_dec_key, AES_DECRYPT);
+	AES_ecb_encrypt(cipherText, dec_out, &AESKey, AES_DECRYPT);
 
-	for(int i = 0; 16; i++){
-		dec_out[i] = cipherText[i];
-		// std::cout << dec_in[i];
-	}
 	return dec_out;
+}
+
+// Functions to convert AES key to hex
+/**
+ * Converts a character into a hexidecimal integer
+ * @param character - the character to convert
+ * @return - the converted character, or 'z' on error
+ */
+unsigned char AES::charToHex(const char& character)
+{
+	/* Is the first digit 0-9 ? */
+	if(character >= '0' && character <= '9')
+		/* Convert the character to hex */
+		return character - '0';
+	/* It the first digit a letter 'a' - 'f'? */
+	else if(character >= 'a' && character <= 'f')
+		/* Conver the cgaracter to hex */
+		return (character - 97) + 10;
+	/* Invalid character */
+	else return 'z';
+}
+
+/**
+ * Converts two characters into a hex integers
+ * and then inserts the integers into the higher
+ * and lower bits of the byte
+ * @param twoChars - two charcters representing the
+ * the hexidecimal nibbles of the byte.
+ * @param twoChars - the two characters
+ * @return - the byte containing having the
+ * valud of two characters e.g. string "ab"
+ * becomes hexidecimal integer 0xab.
+ */
+unsigned char AES::twoCharToHexByte(const unsigned char* twoChars)
+{
+	/* The byte */
+	unsigned char singleByte;
+
+	/* The second character */
+	unsigned char secondChar;
+
+	/* Convert the first character */
+	if((singleByte = charToHex(twoChars[0])) == 'z')
+	{
+		/* Invalid digit */
+		return 'z';
+	}
+
+	/* Move the newly inserted nibble from the
+	 * lower to upper nibble.
+	 */
+	singleByte = (singleByte << 4);
+
+	/* Conver the second character */
+	if((secondChar = charToHex(twoChars[1])) == 'z')
+		return 'z';
+
+	/* Insert the second value into the lower nibble */
+	singleByte |= secondChar;
+
+	return singleByte;
 }

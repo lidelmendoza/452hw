@@ -41,9 +41,11 @@ class AES: public CipherInterface
 
 	/* The protected members */
 	protected:
-
+		// Functions to convert AES key
+		unsigned char twoCharToHexByte(const unsigned char* twoChars);
+		unsigned char charToHex(const char& character);
 	//TODO: declare the AES key
-		AES_KEY aes_enc_key, aes_dec_key;
+		AES_KEY AESKey;
 };
 
 #endif
