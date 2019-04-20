@@ -1,27 +1,26 @@
-# include mydes, myaes
-all: cipher
+# all: cipher #mydes myaes
 
-# include DES.o in ingredients and recipe
-cipher:	cipher.o AES.o
-	g++ cipher.o AES.o -o cipher -lcrypto
+cipher:	cipher.o DES.o AES.o
+	g++ cipher.o DES.o AES.o -o cipher -lcrypto
 
 
 cipher.o:	cipher.cpp
 	g++ -g -c cipher.cpp
 
-mydes:	mydes.cpp
-	g++ mydes.cpp -o mydes -lcrypto
 
-myaes:	myaes.cpp
+mydes: mydes.cpp
+	g++ mydes.cpp -o mydes -lcrypto
+	
+myaes: myaes.cpp
 	g++ myaes.cpp -o myaes -lcrypto
 
-DES.o:	DES.cpp DES.h
+DES.o: DES.cpp DES.h
 	g++ -g -c DES.cpp
 
-AES.o:	AES.cpp AES.h
+AES.o: AES.cpp AES.h
 	g++ -g -c AES.cpp
 
-RSA.o:	RSA.cpp RSA.h
+RSA.o: RSA.cpp RSA.h
 	g++ -g -c RSA.cpp
 
 
