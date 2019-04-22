@@ -18,10 +18,10 @@ int main(int argc, char** argv)
 
 	// if-else to choose between AES and DES
 	if(std::string(argv[1]) == "AES"){
-		printf("AES");
+		printf("Algorithm using is AES");
 		cipher = new AES();
 		if(std::string(argv[2]).length() < 32){
-			std::cout << "Error: Need a 16-byte key (32 characters)\n";
+			std::cout << "\nError: Need a 16-byte key (32 characters)\n";
 			exit(-1);
 		}
 		unsigned char key[33];
@@ -36,11 +36,11 @@ int main(int argc, char** argv)
 
 		// if-else to determine whether to encrypt or decrypt
 		if(std::string(argv[3]) == "ENC"){
-			printf("%s\n", "ENC\n");
+			printf("to ENCRYPT\n");
 			key[0] = 0;
 
 		}else if (std::string(argv[3]) == "DEC"){
-			printf("DEC");
+			printf("to DECRYPT\n");
 			key[0] = 1;
 		}else{
 			printf("Error");
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 		}
 		cipher->setKey((const unsigned char*)key);
 	}else if(std::string(argv[1]) == "DES"){
-		printf("DES");
+		printf("Algorithm using is DES\n");
 		cipher = new DES();
 		cipher->setKey((const unsigned char*)argv[2]);
 	}else{
