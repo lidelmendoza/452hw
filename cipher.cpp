@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
 	// if-else to choose between AES and DES
 	if(std::string(argv[1]) == "AES"){
-		printf("Algorithm using is AES");
+		printf("Algorithm using is AES ");
 		cipher = new AES();
 		if(std::string(argv[2]).length() < 32){
 			std::cout << "\nError: Need a 16-byte key (32 characters)\n";
@@ -29,8 +29,8 @@ int main(int argc, char** argv)
 		// Temp variable to hold the key argument
 		std::string temp = std::string(argv[2]);
 
-		// Read key argument into indices 1-16
-		for(int i = 1; i < 32; i++){
+		// Read key argument into indices 1-32
+		for(int i = 1; i < 33; i++){
 			key[i] = temp[i - 1];
 		}
 
@@ -65,7 +65,6 @@ int main(int argc, char** argv)
 
 	// string to hold original message
 	string plainText = characterBuffer.str();
-	std::cout << "This is the length of the character buffer: " << plainText.length();
 
 	// Padding for AES block
 	if(std::string(argv[1]) == "AES"){
