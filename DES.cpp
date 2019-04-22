@@ -1,15 +1,6 @@
 #include "DES.h"
 
-/**
- * Sets the key to use
- * @param key - the key to use
- * @return - True if the key is valid and False otherwise
- */
-/*DES::DES(): key(nullptr) {
-	for(int i =  0; i < 8; ++i) {
-		des_key[i] = "";
-	}
-}*/
+
 bool DES::setKey(const unsigned char* keyArray)
 {
 	/**
@@ -72,13 +63,13 @@ bool DES::setKey(const unsigned char* keyArray)
  */
 unsigned char* DES::encrypt(const unsigned char* plaintext)
 {
-	 const unsigned char* pstart = plaintext;
+	// const unsigned char* pstart = plaintext;
 
         /* An array of two long integers */
         DES_LONG block[2];
 
         /* Plaintext length */
-        int plaintextLength = 0;
+      //  int plaintextLength = 0;
 
         /* The cipher text*/
         unsigned char* ciphertext = new unsigned char[9];
