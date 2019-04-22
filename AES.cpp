@@ -28,11 +28,6 @@ bool AES::setKey(const unsigned char* keyArray) {
 		++AESKeyIndex;
 	}
 
-	std::cout << "\nThis is in the set key:\n";
-	for(int i = 0; i < 16; i++){
-		std::cout << aes_key[i];
-	}
-	std::cout << "\n\n";
 	// Sets key to either encrypt or decrypt mode
 	if (keyArray[0] == 0){
 		if (AES_set_encrypt_key(aes_key, 128, &AESKey) != 0){
@@ -54,15 +49,12 @@ bool AES::setKey(const unsigned char* keyArray) {
  */
 
 unsigned char * AES::encrypt(const unsigned char * plainText) {
-
-	printf("Made it to encrypt\n");
 	unsigned char* enc_out = new unsigned char[16];
 
 	memset(enc_out, 0, 16);
 
 	AES_ecb_encrypt(plainText, enc_out, &AESKey, AES_ENCRYPT);
 
-	printf("Exiting encrypt\n");
 	return enc_out;
 }
 
@@ -72,7 +64,6 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
  * @return - the plaintext
  */
 unsigned char* AES::decrypt(const unsigned char* cipherText) {
-
 	unsigned char* dec_out = new unsigned char[16];
 
 	memset(dec_out, 0, 16);
