@@ -63,28 +63,11 @@ bool DES::setKey(const unsigned char* keyArray)
  */
 unsigned char* DES::encrypt(const unsigned char* plaintext)
 {
-	// const unsigned char* pstart = plaintext;
-
         /* An array of two long integers */
         DES_LONG block[2];
-
-        /* Plaintext length */
-      //  int plaintextLength = 0;
-
+	
         /* The cipher text*/
         unsigned char* ciphertext = new unsigned char[9];
-
-        /* Verifies the length of plaintext is 8 */
-       // while(plaintext++ != '\0') { ++plaintextLength; }
-
-        /* Continue if length of plaintext is 8 Otherwise exit */
-        //if(plaintextLength != 8) {
-         //       fprintf(stderr,"\nplaintext length error: %d\n",-1);
-         //       return NULL;
-        // }
-
-        /* Reset plaintext to be at the beginning */
-        //plaintext = pstart;
 
         /* Print original text */
         fprintf(stderr, "Original text: %s\n", plaintext);
@@ -129,8 +112,6 @@ unsigned char* DES::encrypt(const unsigned char* plaintext)
  */
 unsigned char* DES::decrypt(const unsigned char* ciphertext)
 {
-	//const unsigned char* pstart = ciphertext;
-
         /* An array of two long integers */
         DES_LONG block[2];
 
@@ -139,18 +120,6 @@ unsigned char* DES::decrypt(const unsigned char* ciphertext)
 
         /* The plain text*/
         unsigned char* decryptedText = new unsigned char[9];
-
-        /* Verifies the length of cipher text is 8 */
-        //while(ciphertext++ != '\0') { ++ciphertextLength; }
-
-        /* Continue if length of cipher text is 8 Otherwise exit */
-        /*if(ciphertextLength != 8) {
-                fprintf(stderr,"\nplaintext length error: %d\n",-1);
-                return NULL;
-        }*/
-
-        /* Reset cipher text to be at the beginning */
-       // ciphertext = pstart;
 
         /* Print cipher text */
         fprintf(stderr, "Cipher text: %s\n", ciphertext);
