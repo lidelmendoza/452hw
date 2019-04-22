@@ -35,14 +35,13 @@ bool DES::setKey(const unsigned char* keyArray)
 		++desKeyIndex;
 	}
 
-	fprintf(stdout, "DES KEY: ");
 
-	/* Print the key */
+	/* Print the key
 	for(keyIndex = 0; keyIndex < 8; ++keyIndex)
 		fprintf(stdout, "%x", this->des_key[keyIndex]);
 
 	fprintf(stdout, "\n");
-
+	*/
 
 	/* Set the encryption key */
 	if ((keyErrorCode = des_set_key_checked(&des_key, this->key)) != 0)
@@ -65,12 +64,9 @@ unsigned char* DES::encrypt(const unsigned char* plaintext)
 {
         /* An array of two long integers */
         DES_LONG block[2];
-	
+
         /* The cipher text*/
         unsigned char* ciphertext = new unsigned char[9];
-
-        /* Print original text */
-        fprintf(stderr, "Original text: %s\n", plaintext);
 
         /* Stuff the first 4 bytes of the plaintext into a long */
         block[0] = ctol((unsigned char*)plaintext);
@@ -99,9 +95,6 @@ unsigned char* DES::encrypt(const unsigned char* plaintext)
  *                            */
         ltoc(block[1], ciphertext + 4);
 
-        /* Print the cipher text */
-        fprintf(stderr, "Cipher text: %s\n", ciphertext);
-
 	return ciphertext;
 }
 
@@ -121,9 +114,6 @@ unsigned char* DES::decrypt(const unsigned char* ciphertext)
         /* The plain text*/
         unsigned char* decryptedText = new unsigned char[9];
 
-        /* Print cipher text */
-        fprintf(stderr, "Cipher text: %s\n", ciphertext);
-
         /* Stuff the first 4 bytes of the cipher text into a long */
         block[0] = ctol((unsigned char*)ciphertext);
 
@@ -140,11 +130,7 @@ unsigned char* DES::decrypt(const unsigned char* ciphertext)
         ltoc(block[0], decryptedText);
         ltoc(block[1], decryptedText + 4);
 
-        /* Print the cipher text */
-        fprintf(stderr, "Cipher text: %s\n", ciphertext);
-
         return decryptedText;
-
 }
 
 /**
