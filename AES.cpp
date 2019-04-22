@@ -10,21 +10,6 @@
  */
 bool AES::setKey(const unsigned char* keyArray) {
 
-
-	//TODO: AES implementation of openssl cares about whether
-	//you are encrypting or decryting when setting the key.
-	//That is, when encrypting you use function AES_set_encrypt_key(...)
-	//and when decrypting AES_set_decrypt_key(...).
-	//
-	//One way to solve this problem is to pass in a 17 byte key, where
-	//the first byte is used to indicate whether we are encrypting or
-	//decrypting. E.g., if the first byte is 0, then ise AES_set_encrypt_key(...).
-	//Otherwise, use AES_set_decrypt_key(...).  The rest of the bytes in the
-	//array indicate the 16 bytes of the 128-bit AES key.
-	//
-	//Both functions return 0 on success and other values of faliure.
-	//For documentation, please see https://boringssl.googlesource.com/boringssl/+/2623/include/openssl/aes.h
-	//and aes.cpp example provided witht the assignment.
 	printf("Made it to setkey\n");
 	unsigned char keyAfterByte[32];
 	unsigned char aes_key[16];
@@ -70,10 +55,6 @@ bool AES::setKey(const unsigned char* keyArray) {
  */
 
 unsigned char * AES::encrypt(const unsigned char * plainText) {
-	//TODO: 1. Dynamically allocate a block to store the ciphertext.
-	// 2. Use AES_ecb_encrypt(...) to encrypt the text (please see the URL in setKey(...)
-	// and the aes.cpp example provided
-	// 3. return the pointer to the ciphertext
 
 	printf("Made it to encrypt\n");
 	unsigned char* enc_out = new unsigned char[16];
@@ -99,10 +80,6 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
  */
 unsigned char* AES::decrypt(const unsigned char* cipherText) {
 
-	//TODO: 1. Dynamically allocate a block to store the plaintext.
-	// 2. Use AES_ecb_encrypt(...) to decrypt the text (please see the URL in setKey(...)
-	//  and the aes.cpp example provided.
-	//  3. Return the pointer tot he plaintext
 	unsigned char* dec_out = new unsigned char[16];
 
 	memset(dec_out, 0, 16);
