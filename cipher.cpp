@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 		cipher->setKey((const unsigned char*)key);
 	}else if(std::string(argv[1]) == "DES"){
 		printf("Algorithm using is DES\n");
-		cipher = new DES();
+		cipher = new DES;
 		cipher->setKey((const unsigned char*)argv[2]);
 	}else{
 		fprintf(stderr, "NO SUCH ENCRYPTION METHOD\n");
