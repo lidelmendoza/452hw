@@ -10,7 +10,6 @@
  */
 bool AES::setKey(const unsigned char* keyArray) {
 
-	printf("Made it to setkey\n");
 	unsigned char keyAfterByte[32];
 	unsigned char aes_key[16];
 	int AESKeyIndex = 0;
@@ -61,12 +60,6 @@ unsigned char * AES::encrypt(const unsigned char * plainText) {
 
 	memset(enc_out, 0, 16);
 
-	/*
-	std::cout << "size of ENC_IN: " << sizeof(enc_in) << "\n";
-	for(int i = 0; i < 16; i++){
-		enc_in[i] = plainText[i];
-	}
-*/
 	AES_ecb_encrypt(plainText, enc_out, &AESKey, AES_ENCRYPT);
 
 	printf("Exiting encrypt\n");
@@ -84,7 +77,6 @@ unsigned char* AES::decrypt(const unsigned char* cipherText) {
 
 	memset(dec_out, 0, 16);
 
-	// std::cout << &aes_key;
 	AES_ecb_encrypt(cipherText, dec_out, &AESKey, AES_DECRYPT);
 
 	return dec_out;
